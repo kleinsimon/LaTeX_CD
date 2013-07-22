@@ -22,16 +22,16 @@ Attribute VB_Exposed = False
 
 Option Explicit
 
-Private Declare Function SetEnvironmentVariable Lib "kernel32" _
+Private Declare PtrSafe Function SetEnvironmentVariable Lib "kernel32" _
   Alias "SetEnvironmentVariableA" ( _
   ByVal lpName As String, _
   ByVal lpValue As String) As Long
 
-Private Declare Function OpenProcess Lib "kernel32" _
+Private Declare PtrSafe Function OpenProcess Lib "kernel32" _
 (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, _
 ByVal dwProcessId As Long) As Long
 
-Private Declare Function GetExitCodeProcess Lib "kernel32" _
+Private Declare PtrSafe Function GetExitCodeProcess Lib "kernel32" _
 (ByVal hProcess As Long, lpExitCode As Long) As Long
 
 Private Const STATUS_PENDING = &H103&
