@@ -1,0 +1,32 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Latex2CD2.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DefaultTemplate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\documentclass[pdflatex,12pt,a4paper]{report}
+\usepackage{amsmath} 
+\usepackage{bbm} 
+\usepackage{commath} 
+\usepackage{textcomp} 
+\usepackage{sistyle} 
+\usepackage{bigstrut} 
+\usepackage{ae,aecompl} 
+\newcommand{\boldm}[1]{\mbox{\boldmath{$\mathrm {#1}$}}}
+\def \b#1{\relax \ifmmode{\boldm {#1}\/}\else{$\bf {#1}\/$}\fi}
+\begin{document} 
+\thispagestyle{empty}
+%%ANCHOR%%
+\end{document}
+</Value>
+    </Setting>
+    <Setting Name="LastTemplate" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="GSPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mgs.exe</Value>
+    </Setting>
+    <Setting Name="PDFLatexPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">pdflatex.exe</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
