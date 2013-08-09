@@ -2,10 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Latex2CD2="clr-namespace:Latex2CD2;assembly=Latex2CD2" x:Class="Tester.MainWindow"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="327">
     <Grid>
 
-        <Latex2CD2:LatexDock HorizontalAlignment="Left" Margin="180,90,0,0" VerticalAlignment="Top"/>
+        <Latex2CD2:LatexDock HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="261"/>
 
     </Grid>
 </Window>

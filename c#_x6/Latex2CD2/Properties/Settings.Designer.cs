@@ -84,5 +84,17 @@ namespace Latex2CD2.Properties {
                 this["PDFLatexPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool hideWindows {
+            get {
+                return ((bool)(this["hideWindows"]));
+            }
+            set {
+                this["hideWindows"] = value;
+            }
+        }
     }
 }

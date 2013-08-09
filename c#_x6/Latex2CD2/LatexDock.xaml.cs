@@ -38,11 +38,64 @@ namespace Latex2CD2
         string curTemplate = "";
         string tmpfp = System.IO.Path.GetTempPath();
         string tmpf = "";
+        bool _latexBin = false;
+        bool _gsBin = false;
+        bool latexBin
+        {
+            get { return _latexBin; }
+            set 
+            {
+                checkPDF.IsChecked = value;
+                _latexBin=value;
+            }
+        }
+        bool gsBin
+        {
+            get { return _gsBin; }
+            set
+            {
+                checkGS.IsChecked = value;
+                _gsBin = value;
+            }
+        }
+        bool hideWin
+        {
+            get { return Properties.Settings.Default.hideWindows; }
+            set
+            {
+                checkHide.IsChecked = value;
+                Properties.Settings.Default.hideWindows = value;
+                Properties.Settings.Default.Save();
+            }
+        }
 
         public LatexDock()
         {
             InitializeComponent();
+            initDock();
+        }
+        public LatexDock(object app)
+        {
+            InitializeComponent();
+            initDock();
+
+            CDWin = (CorelDRAW.Application)app;
+            CDWin.SelectionChange += CDWin_SelectionChange;
+            getSelection();
+        }
+
+        private void initDock()
+        {
+            checkPath();
             getTemplate();
+            checkHide.IsChecked = hideWin;
+        }
+
+
+        private void checkPath()
+        {
+            latexBin = ExistsOnPath(Properties.Settings.Default.PDFLatexPath);
+            gsBin = ExistsOnPath(Properties.Settings.Default.GSPath);
         }
 
         private void getTemplate()
@@ -51,16 +104,6 @@ namespace Latex2CD2
                 curTemplate = Properties.Settings.Default.DefaultTemplate;
             else
                 curTemplate = Properties.Settings.Default.LastTemplate;
-        }
-
-        public LatexDock(object app)
-        {
-            InitializeComponent();
-            getTemplate();
-
-            CDWin = (CorelDRAW.Application)app;
-            CDWin.SelectionChange += CDWin_SelectionChange;
-            getSelection();
         }
 
         void CDWin_SelectionChange()
@@ -105,23 +148,13 @@ namespace Latex2CD2
 
         private void InsertButton_Click(object sender, RoutedEventArgs e)
         {
+            if (CDWin.ActiveLayer == null) return;
             GeneratePDF(curShape);
             cleanTempFiles();
         }
 
         private void GeneratePDF(CorelDRAW.Shape oldShape = null)
         {
-            if (!ExistsOnPath(Properties.Settings.Default.PDFLatexPath))
-            {
-                MessageBox.Show("pdflatex.exe not in PATH, exiting... Maybe install MikTex?");
-                return;
-            }
-            if (!ExistsOnPath(Properties.Settings.Default.PDFLatexPath))
-            {
-                MessageBox.Show("mgs.exe not in PATH, exiting... Maybe install MikTex?");
-                return;
-            }
-
             tmpf = Guid.NewGuid().ToString();
 
             string output = curTemplate.Replace("%%ANCHOR%%", OutputText.Text);
@@ -223,12 +256,13 @@ namespace Latex2CD2
             ProcessStartInfo psi = new ProcessStartInfo(command, Arguments);
 
             psi.WorkingDirectory = WorkingDir;
-            psi.RedirectStandardInput = true;
-            psi.RedirectStandardOutput = true;
-            psi.WindowStyle = ProcessWindowStyle.Hidden;
+
+            psi.RedirectStandardInput = hideWin;
+            psi.RedirectStandardOutput = hideWin;
+            psi.WindowStyle = (hideWin) ? ProcessWindowStyle.Hidden : ProcessWindowStyle.Normal;
             psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
-            psi.RedirectStandardError = true;
+            psi.CreateNoWindow = hideWin;
+            psi.RedirectStandardError = hideWin;
 
             prc = Process.Start(psi);
 
@@ -239,7 +273,7 @@ namespace Latex2CD2
 
         private void TemplateButton_Click(object sender, RoutedEventArgs e)
         {
-            TemplateWindow tmp = new TemplateWindow();
+           TemplateWindow tmp = new TemplateWindow();
             tmp.ShowDialog();
         }
 
@@ -263,6 +297,43 @@ namespace Latex2CD2
                     return fullPath;
             }
             return null;
+        }
+
+        private void pdfBrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+            dlg.DefaultExt = ".exe";
+            dlg.Filter = "pdflatex.exe|pdflatex.exe";
+            bool? result = dlg.ShowDialog();
+
+            if (result == true && ExistsOnPath(dlg.FileName))
+            {
+                Properties.Settings.Default.PDFLatexPath = dlg.FileName;
+                Properties.Settings.Default.Save();
+            }
+            checkPath();
+        }
+
+        private void gsBrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+            dlg.DefaultExt = ".exe";
+            dlg.Filter = "Ghostscript|gs.exe;mgs.exe";
+            bool? result = dlg.ShowDialog();
+
+            if (result == true && ExistsOnPath(dlg.FileName))
+            {
+                Properties.Settings.Default.GSPath = dlg.FileName;
+                Properties.Settings.Default.Save();
+            }
+            checkPath();
+        }
+
+        private void checkHide_Click(object sender, RoutedEventArgs e)
+        {
+            hideWin = !hideWin;
         }
     }
 }

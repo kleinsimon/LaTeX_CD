@@ -28,5 +28,8 @@
     <Setting Name="PDFLatexPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">pdflatex.exe</Value>
     </Setting>
+    <Setting Name="hideWindows" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
