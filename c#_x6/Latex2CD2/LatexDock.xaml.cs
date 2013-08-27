@@ -189,7 +189,7 @@ namespace Latex2CD2
                                  "-dNOPAUSE",
                                  tmpf + ".pdf",
                                  "-c",
-                                 "quit"
+                                 "quit",
                              };
 
             runCommand(Properties.Settings.Default.GSPath, string.Join(" ", gsArg), tmpfp);
