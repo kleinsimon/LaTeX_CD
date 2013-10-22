@@ -1,0 +1,8 @@
+﻿<Window x:Class="Latex2CD2.errorLog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="errorLog" Height="353" Width="962.375">
+    <ScrollViewer Margin="0">
+        <TextBox x:Name="OutputText" TextWrapping="Wrap" Text="TextBox" Margin="0"/>
+    </ScrollViewer>
+</Window>
