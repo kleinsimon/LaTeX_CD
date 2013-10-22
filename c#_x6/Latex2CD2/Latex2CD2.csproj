@@ -48,9 +48,16 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="errorLog.xaml.cs">
+      <DependentUpon>errorLog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TemplateWindow.xaml.cs">
       <DependentUpon>TemplateWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="errorLog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LatexDock.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -96,7 +103,7 @@
     <COMReference Include="CorelDRAW">
       <Guid>{FBF4300F-D921-11D1-B806-00A0C90646A9}</Guid>
       <VersionMajor>16</VersionMajor>
-      <VersionMinor>3</VersionMinor>
+      <VersionMinor>1</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
@@ -105,7 +112,7 @@
     <COMReference Include="VGCore">
       <Guid>{95E23C91-BC5A-49F3-8CD1-1FC515597048}</Guid>
       <VersionMajor>16</VersionMajor>
-      <VersionMinor>3</VersionMinor>
+      <VersionMinor>1</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
