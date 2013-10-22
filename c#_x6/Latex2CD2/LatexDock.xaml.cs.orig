@@ -207,7 +207,11 @@ namespace Latex2CD2
                                  "quit",
                              };
 
+<<<<<<< HEAD
             string GSout = "";
+=======
+            string GSout="";
+>>>>>>> b5cddf6d6e7302e11806432c5224027283e1aaa4
             runCommand(Properties.Settings.Default.GSPath, string.Join(" ", gsArg), tmpfp, out GSout);
 
             if (!File.Exists(tmpfp + tmpf + ".ps"))
@@ -305,7 +309,11 @@ namespace Latex2CD2
 
             prc.WaitForExit(100000);
 
+<<<<<<< HEAD
             output = command + " " + Arguments + Environment.NewLine + prc.StandardOutput.ReadToEnd() + Environment.NewLine;
+=======
+            output = prc.StandardOutput.ReadToEnd();
+>>>>>>> b5cddf6d6e7302e11806432c5224027283e1aaa4
 
             prc.Close();
         }

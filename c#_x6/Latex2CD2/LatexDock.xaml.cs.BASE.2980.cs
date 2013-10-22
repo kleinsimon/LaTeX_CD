@@ -43,10 +43,10 @@ namespace Latex2CD2
         bool latexBin
         {
             get { return _latexBin; }
-            set
+            set 
             {
                 checkPDF.IsChecked = value;
-                _latexBin = value;
+                _latexBin=value;
             }
         }
         bool gsBin
@@ -68,18 +68,6 @@ namespace Latex2CD2
                 Properties.Settings.Default.Save();
             }
         }
-        bool showLog
-        {
-            get { return Properties.Settings.Default.showLog; }
-            set
-            {
-                checkLog.IsChecked = value;
-                Properties.Settings.Default.showLog = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-
 
         public LatexDock()
         {
@@ -101,7 +89,6 @@ namespace Latex2CD2
             checkPath();
             getTemplate();
             checkHide.IsChecked = hideWin;
-            checkLog.IsChecked = showLog;
         }
 
 
@@ -161,6 +148,7 @@ namespace Latex2CD2
 
         private void InsertButton_Click(object sender, RoutedEventArgs e)
         {
+            if (CDWin.ActiveLayer == null) return;
             GeneratePDF(curShape);
             cleanTempFiles();
         }
@@ -168,7 +156,7 @@ namespace Latex2CD2
         private void GeneratePDF(CorelDRAW.Shape oldShape = null)
         {
             tmpf = Guid.NewGuid().ToString();
-            
+
             string output = curTemplate.Replace("%%ANCHOR%%", OutputText.Text);
 
             File.WriteAllText(tmpfp + tmpf + ".tex", output);
@@ -184,14 +172,11 @@ namespace Latex2CD2
                                     "-interaction=nonstopmode",
                                 };
 
-            string LatexLog = "";
-            runCommand(Properties.Settings.Default.PDFLatexPath, string.Join(" ", latexArg), tmpfp, out LatexLog);
+            runCommand(Properties.Settings.Default.PDFLatexPath, string.Join(" ", latexArg), tmpfp);
 
             if (!File.Exists(tmpfp + tmpf + ".pdf"))
             {
-                MessageBox.Show("tex-file could not be parsed. Press OK to see Log.");
-                if (LatexLog != "")
-                    displayLog(LatexLog);
+                MessageBox.Show("tex-file could not be parsed");
                 return;
             }
 
@@ -207,28 +192,19 @@ namespace Latex2CD2
                                  "quit",
                              };
 
-            string GSout = "";
-            runCommand(Properties.Settings.Default.GSPath, string.Join(" ", gsArg), tmpfp, out GSout);
+            runCommand(Properties.Settings.Default.GSPath, string.Join(" ", gsArg), tmpfp);
 
             if (!File.Exists(tmpfp + tmpf + ".ps"))
             {
                 MessageBox.Show("pdf-file could not be interpreted");
-                if (GSout != "")
-                    displayLog(LatexLog + Environment.NewLine + GSout);
                 return;
-            }
-
-            if (showLog)
-            {
-                displayLog(LatexLog + Environment.NewLine + GSout);
             }
 
             if (CDWin != null)
             {
-                if (CDWin.ActiveLayer == null) return;
                 locked = true;
 
-                StructImportOptions impOpts = new StructImportOptions();
+                StructImportOptions impOpts= new StructImportOptions();
                 impOpts.MaintainLayers = true;
                 impOpts.Mode = CorelDRAW.cdrImportMode.cdrImportFull;
 
@@ -238,7 +214,7 @@ namespace Latex2CD2
 
                 newShape.Properties["latex2cd", (int)ShapeProperties.isLatexObject] = true;
                 newShape.Properties["latex2cd", (int)ShapeProperties.latexText] = OutputText.Text;
-                newShape.Properties["latex2cd", (int)ShapeProperties.latexTemplate] = curTemplate;
+                newShape.Properties["latex2cd", (int)ShapeProperties.latexTemplate] = Properties.Settings.Default.LastTemplate;
 
                 OutputText.Text = "";
 
@@ -266,15 +242,8 @@ namespace Latex2CD2
             }
         }
 
-        private void displayLog(string log)
-        {
-            if (log.Trim() == "") return;
-            new errorLog(log);
-        }
-
         private void cleanTempFiles()
         {
-
             foreach (string f in Directory.GetFiles(tmpfp, tmpf + ".*", SearchOption.TopDirectoryOnly))
             {
                 File.Delete(f);
@@ -283,36 +252,28 @@ namespace Latex2CD2
 
         private void runCommand(string command, string Arguments, string WorkingDir)
         {
-            string trash;
-            runCommand(command, Arguments, WorkingDir, out trash);
-        }
-
-        private void runCommand(string command, string Arguments, string WorkingDir, out string output)
-        {
             Process prc = null;
             ProcessStartInfo psi = new ProcessStartInfo(command, Arguments);
 
             psi.WorkingDirectory = WorkingDir;
 
-            psi.RedirectStandardInput = true;
-            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardInput = hideWin;
+            psi.RedirectStandardOutput = hideWin;
             psi.WindowStyle = (hideWin) ? ProcessWindowStyle.Hidden : ProcessWindowStyle.Normal;
             psi.UseShellExecute = false;
             psi.CreateNoWindow = hideWin;
-            psi.RedirectStandardError = true;
+            psi.RedirectStandardError = hideWin;
 
             prc = Process.Start(psi);
 
             prc.WaitForExit(100000);
-
-            output = command + " " + Arguments + Environment.NewLine + prc.StandardOutput.ReadToEnd() + Environment.NewLine;
 
             prc.Close();
         }
 
         private void TemplateButton_Click(object sender, RoutedEventArgs e)
         {
-            TemplateWindow tmp = new TemplateWindow();
+           TemplateWindow tmp = new TemplateWindow();
             tmp.ShowDialog();
         }
 
@@ -373,11 +334,6 @@ namespace Latex2CD2
         private void checkHide_Click(object sender, RoutedEventArgs e)
         {
             hideWin = !hideWin;
-        }
-
-        private void checkLog_Click(object sender, RoutedEventArgs e)
-        {
-            showLog = !showLog;
         }
     }
 }

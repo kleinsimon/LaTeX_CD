@@ -168,7 +168,7 @@ namespace Latex2CD2
         private void GeneratePDF(CorelDRAW.Shape oldShape = null)
         {
             tmpf = Guid.NewGuid().ToString();
-            
+
             string output = curTemplate.Replace("%%ANCHOR%%", OutputText.Text);
 
             File.WriteAllText(tmpfp + tmpf + ".tex", output);
