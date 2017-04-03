@@ -196,7 +196,7 @@ namespace Latex2CD2
             }
 
             string[] gsArg = { 
-                                 "-sDEVICE=pswrite",
+                                 "-sDEVICE=ps2write",
                                  "-dNOCACHE",
                                  "-sOutputFile=" + tmpf + ".ps",
                                  "-q",
